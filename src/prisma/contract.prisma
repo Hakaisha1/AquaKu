@@ -1,0 +1,49 @@
+// use prisma-8
+
+model Produk {
+  id          Int      @id @default(autoincrement())
+  nama        String
+  deskripsi   String?
+  harga       Int
+  stok        Int      @default(0)
+  gambar      String?
+  kategori    String?
+  orderItems  OrderItem[]
+  createdAt   TimestamptzString @default(now())
+  updatedAt   temporal.updatedAtString()
+}
+
+model Pelanggan {
+  id          Int      @id @default(autoincrement())
+  nama        String
+  whatsapp    String
+  email       String?
+  orders      Order[]
+  createdAt   TimestamptzString @default(now())
+  updatedAt   temporal.updatedAtString()
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  pelanggan   Pelanggan @relation(fields: [pelangganId], references: [id])
+  pelangganId Int
+  items       OrderItem[]
+  total       Int       @default(0)
+  status      String    @default("Menunggu Pembayaran")
+  metodeKirim String
+  ongkir      Int       @default(0)
+  pembayaran  String
+  alamatKirim String?
+  createdAt   TimestamptzString @default(now())
+  updatedAt   temporal.updatedAtString()
+}
+
+model OrderItem {
+  id          Int      @id @default(autoincrement())
+  order       Order    @relation(fields: [orderId], references: [id])
+  orderId     Int
+  produk      Produk   @relation(fields: [produkId], references: [id])
+  produkId    Int
+  jumlah      Int
+  harga       Int
+}
